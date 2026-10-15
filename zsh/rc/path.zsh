@@ -24,3 +24,5 @@ export PATH=$HOME/.cargo/bin:$PATH
 export GOROOT=/home/snppg/.go
 export GOPATH=/home/snppg/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+[[ -d $HOME/.local/lib/kache/shims ]] && export PATH=$HOME/.local/lib/kache/shims:$PATH

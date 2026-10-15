@@ -136,6 +136,7 @@
     - command: bash scripts/install-delta.sh
     - command: bash scripts/install-go.sh
     - command: bash scripts/install-worktrunk.sh
+    - command: bash scripts/install-kache.sh
     - command: bash scripts/install-vscode.sh
     - command: bash scripts/install-vscode-extensions.sh
     - command: bash scripts/install-docker.sh
