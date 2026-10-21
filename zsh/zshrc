@@ -1,6 +1,6 @@
 ZSH_CONFIG_DIR=${ZSH_CONFIG_DIR:-${${(%):-%x}:A:h}}
 _zshrc_parts=(
-  env zinit history keys fzf
+  env zinit history keys fzf compat
   fn-docker fn-git fn-fzf fn-media fn-misc
   aliases aliases-work path worktrees syntax
 )
