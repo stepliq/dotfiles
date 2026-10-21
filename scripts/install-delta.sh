@@ -1,53 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+# shellcheck source=lib/github-bin.sh
+source "${ROOT}/lib/github-bin.sh"
+dotfiles_skip_apps
 
 VERSION="${DELTA_VERSION:-0.19.2}"
-DEST="${HOME}/.local/bin"
-mkdir -p "${DEST}"
-
+DEST="$(dotfiles_dest_bin)"
 if [[ -x "${DEST}/delta" ]]; then
-  echo "delta: already installed ($("${DEST}/delta" --version 2>/dev/null | head -n1 || true))"
+  dotfiles_log "already installed ($("${DEST}/delta" --version 2>/dev/null | head -n1 || true))"
   exit 0
 fi
 
-arch="$(uname -m)"
-os="$(uname -s)"
-suffix=
+case "$(uname -s):$(uname -m)" in
+  Linux:x86_64) suffix=x86_64-unknown-linux-gnu ;;
+  Linux:aarch64) suffix=aarch64-unknown-linux-gnu ;;
+  Darwin:x86_64) suffix=x86_64-apple-darwin ;;
+  Darwin:arm64) suffix=aarch64-apple-darwin ;;
+  *) dotfiles_die "unsupported platform: $(uname -s)/$(uname -m)" ;;
+esac
 
-if [[ "${os}" == "Linux" ]]; then
-  case "${arch}" in
-    x86_64) suffix=x86_64-unknown-linux-gnu ;;
-    aarch64) suffix=aarch64-unknown-linux-gnu ;;
-    *) echo "delta: unsupported Linux arch: ${arch}" >&2; exit 1 ;;
-  esac
-elif [[ "${os}" == "Darwin" ]]; then
-  case "${arch}" in
-    x86_64) suffix=x86_64-apple-darwin ;;
-    arm64) suffix=aarch64-apple-darwin ;;
-    *) echo "delta: unsupported Darwin arch: ${arch}" >&2; exit 1 ;;
-  esac
-else
-  echo "delta: unsupported OS: ${os}" >&2
-  exit 1
-fi
-
-name="delta-${VERSION}-${suffix}"
-url="https://github.com/dandavison/delta/releases/download/${VERSION}/${name}.tar.gz"
-tmp="$(mktemp -d)"
-trap 'rm -rf "${tmp}"' EXIT
-
-echo "delta: downloading ${url}"
-curl -fsSL "${url}" | tar -xzf - -C "${tmp}"
-
-bin=""
-if [[ -f "${tmp}/${name}/delta" ]]; then
-  bin="${tmp}/${name}/delta"
-else
-  bin="$(find "${tmp}" -maxdepth 3 -name delta -type f 2>/dev/null | head -n1 || true)"
-fi
-[[ -n "${bin}" && -f "${bin}" ]] || { echo "delta: could not find delta binary in archive" >&2; exit 1; }
-chmod +x "${bin}"
-
-install -m0755 "${bin}" "${DEST}/delta"
-echo "delta: installed ${DEST}/delta ($("${DEST}/delta" --version | head -n1))"
+dotfiles_install_from_url \
+  "https://github.com/dandavison/delta/releases/download/${VERSION}/delta-${VERSION}-${suffix}.tar.gz" \
+  delta "${DEST}"

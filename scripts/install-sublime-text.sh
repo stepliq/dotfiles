@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Stable channel — https://www.sublimetext.com/docs/linux_repositories.html
 set -euo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
-command -v subl >/dev/null 2>&1 && exit 0
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+dotfiles_skip_apps
+dotfiles_have_cmd subl && exit 0
 
-if command -v dnf >/dev/null 2>&1; then
+if dotfiles_have_cmd dnf; then
   sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
   ST_REPO=https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
   if [[ ! -f /etc/yum.repos.d/sublime-text.repo ]]; then
@@ -13,7 +15,7 @@ if command -v dnf >/dev/null 2>&1; then
     fi
   fi
   sudo dnf install -y sublime-text
-elif command -v apt-get >/dev/null 2>&1; then
+elif dotfiles_have_cmd apt-get; then
   sudo install -d -m0755 /etc/apt/keyrings
   wget -qO- https://download.sublimetext.com/sublimehq-pub.gpg | sudo tee /etc/apt/keyrings/sublimehq-pub.asc >/dev/null
   printf '%s\n' \
@@ -25,6 +27,5 @@ elif command -v apt-get >/dev/null 2>&1; then
   sudo apt-get update -qq
   sudo apt-get install -y sublime-text
 else
-  echo "install-sublime-text: unsupported OS" >&2
-  exit 1
+  dotfiles_die "unsupported OS"
 fi

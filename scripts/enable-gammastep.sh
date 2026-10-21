@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
-command -v gammastep-indicator >/dev/null 2>&1 || command -v gammastep >/dev/null 2>&1 || exit 0
-command -v systemctl >/dev/null 2>&1 || exit 0
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+dotfiles_skip_apps
+
+dotfiles_have_cmd gammastep-indicator || dotfiles_have_cmd gammastep || exit 0
+dotfiles_have_cmd systemctl || exit 0
 
 systemctl --user disable --now redshift.service redshift-gtk.service 2>/dev/null || true
 
@@ -15,39 +19,33 @@ fi
 
 case "$session" in
   wayland) method=wayland ;;
-  x11) method=randr ;;
   *) method=randr ;;
 esac
 
-# Indicator owns the daemon — don't run both.
+write_method_dropin() {
+  local unit=$1 binary=$2
+  local dropin_dir="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/${unit}.service.d"
+  mkdir -p "$dropin_dir"
+  cat >"$dropin_dir/method.conf" <<EOF
+[Service]
+ExecStart=
+ExecStart=${binary} -m ${method}
+Restart=always
+RestartSec=2
+EOF
+}
+
 systemctl --user disable --now gammastep.service 2>/dev/null || true
 
-if command -v gammastep-indicator >/dev/null 2>&1; then
-  dropin_dir="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/gammastep-indicator.service.d"
-  mkdir -p "$dropin_dir"
-  cat >"$dropin_dir/method.conf" <<EOF
-[Service]
-ExecStart=
-ExecStart=/usr/bin/gammastep-indicator -m ${method}
-Restart=always
-RestartSec=2
-EOF
-  # clear obsolete drop-in for plain daemon if any
+if dotfiles_have_cmd gammastep-indicator; then
+  write_method_dropin gammastep-indicator /usr/bin/gammastep-indicator
   rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/gammastep.service.d/method.conf"
-  systemctl --user daemon-reload
-  systemctl --user enable --now gammastep-indicator.service
-  systemctl --user restart gammastep-indicator.service
+  unit=gammastep-indicator
 else
-  dropin_dir="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user/gammastep.service.d"
-  mkdir -p "$dropin_dir"
-  cat >"$dropin_dir/method.conf" <<EOF
-[Service]
-ExecStart=
-ExecStart=/usr/bin/gammastep -m ${method}
-Restart=always
-RestartSec=2
-EOF
-  systemctl --user daemon-reload
-  systemctl --user enable --now gammastep.service
-  systemctl --user restart gammastep.service
+  write_method_dropin gammastep /usr/bin/gammastep
+  unit=gammastep
 fi
+
+systemctl --user daemon-reload
+systemctl --user enable --now "${unit}.service"
+systemctl --user restart "${unit}.service"

@@ -138,10 +138,6 @@
       path: tmux/tmux.conf.local
       create: true
       backup: true
-    ~/.local/bin/ssh-import-keys:
-      path: bin/ssh-import-keys
-      create: true
-      backup: true
     ~/.config/gammastep/config.ini:
       path: gammastep/config.ini
       create: true

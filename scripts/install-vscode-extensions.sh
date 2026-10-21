@@ -1,36 +1,48 @@
 #!/usr/bin/env bash
-# DOTFILES_VSCODE_CLI=code|cursor|codium  DOTFILES_VSCODE_EXT_TIMEOUT=300
 set -uo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
-T="${DOTFILES_VSCODE_EXT_TIMEOUT:-180}"
-EXT=(
-  editorconfig.editorconfig ms-python.python ms-python.vscode-pylance
-  ms-vscode.cpptools sobolevn.pustota subframe7536.custom-ui-style teabyii.ayu
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+dotfiles_skip_apps
+
+timeout_secs="${DOTFILES_VSCODE_EXT_TIMEOUT:-180}"
+extensions=(
+  editorconfig.editorconfig
+  ms-python.python
+  ms-python.vscode-pylance
+  ms-vscode.cpptools
+  sobolevn.pustota
+  subframe7536.custom-ui-style
+  teabyii.ayu
 )
 
-cli() {
-  if [[ -n ${DOTFILES_VSCODE_CLI:-} ]] && command -v "$DOTFILES_VSCODE_CLI" >/dev/null 2>&1; then
+find_cli() {
+  if [[ -n ${DOTFILES_VSCODE_CLI:-} ]] && dotfiles_have_cmd "$DOTFILES_VSCODE_CLI"; then
     echo "$DOTFILES_VSCODE_CLI"
     return
   fi
-  for c in code codium cursor; do
-    command -v "$c" >/dev/null 2>&1 && echo "$c" && return
+  for cli in code codium cursor; do
+    if dotfiles_have_cmd "$cli"; then
+      echo "$cli"
+      return
+    fi
   done
   return 1
 }
 
-run() {
-  if command -v timeout >/dev/null 2>&1; then
-    timeout --signal=TERM "$T" "$1" --install-extension "$2" --force </dev/null
+install_extension() {
+  local cli=$1 extension=$2
+  if dotfiles_have_cmd timeout; then
+    timeout --signal=TERM "$timeout_secs" "$cli" --install-extension "$extension" --force </dev/null
   else
-    "$1" --install-extension "$2" --force </dev/null
+    "$cli" --install-extension "$extension" --force </dev/null
   fi
 }
 
-C="$(cli)" || exit 0
-f=0
-for e in "${EXT[@]}"; do run "$C" "$e" || f=1; done
-if [[ $f -ne 0 ]]; then
-  echo "vscode-extensions: some installs failed (continuing)" >&2
-fi
+cli="$(find_cli)" || exit 0
+failed=0
+for extension in "${extensions[@]}"; do
+  install_extension "$cli" "$extension" || failed=1
+done
+[[ $failed -eq 0 ]] || dotfiles_warn "some installs failed (continuing)"
 exit 0

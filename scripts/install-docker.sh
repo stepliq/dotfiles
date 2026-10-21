@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# curl -fsSL https://get.docker.com | sh — then add user to group docker
 set -euo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
-
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+dotfiles_skip_apps
 REAL_USER="${SUDO_USER:-$USER}"
 
-if ! command -v docker >/dev/null 2>&1; then
+if ! dotfiles_have_cmd docker; then
   tmp="$(mktemp /tmp/get-docker.XXXXXX.sh)"
   trap 'rm -f "$tmp"' EXIT
   curl -fsSL https://get.docker.com -o "$tmp"
@@ -15,6 +16,6 @@ fi
 if getent group docker >/dev/null 2>&1; then
   if ! id -nG "$REAL_USER" | grep -qw docker; then
     sudo usermod -aG docker "$REAL_USER"
-    echo "install-docker: added $REAL_USER to group docker — log out and back in (or newgrp docker) to use docker without sudo." >&2
+    dotfiles_warn "added $REAL_USER to group docker — log out and back in (or newgrp docker) to use docker without sudo."
   fi
 fi

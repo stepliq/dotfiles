@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
 TPM_DIR="${HOME}/.tmux/plugins/tpm"
 PLUG_DIR="${HOME}/.config/tmux/plugins"
 
@@ -18,10 +20,10 @@ clone_plugin_github() {
   local url="https://github.com/${slug}.git"
   local dest="${PLUG_DIR}/${dir}"
   if [[ -d "${dest}/.git" ]]; then
-    echo "tmux: plugin ${slug} already present at ${dest}"
+    dotfiles_log "plugin ${slug} already present at ${dest}"
     return 0
   fi
-  echo "tmux: cloning ${slug} -> ${dest}"
+  dotfiles_log "cloning ${slug} -> ${dest}"
   if [[ -n "${branch}" ]]; then
     GIT_TERMINAL_PROMPT=0 git clone --branch "${branch}" --single-branch --depth 1 "${url}" "${dest}"
   else
@@ -43,9 +45,7 @@ resolve_tmux_conf() {
     echo "${HOME}/.tmux.conf"
     return 0
   fi
-  local script_dir
-  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  local repo_conf="${script_dir}/../tmux/tmux.conf"
+  local repo_conf="${ROOT}/../tmux/tmux.conf"
   if [[ -f "${repo_conf}" ]]; then
     echo "${repo_conf}"
     return 0
@@ -55,23 +55,23 @@ resolve_tmux_conf() {
 
 CONF="$(resolve_tmux_conf)"
 if [[ -z "${CONF}" ]]; then
-  echo "tmux: no tmux.conf found — run ./install to link dotfiles."
+  dotfiles_log "no tmux.conf found — run ./install to link dotfiles."
   exit 0
 fi
 
-if ! command -v tmux >/dev/null 2>&1; then
-  echo "tmux: tmux not installed; TPM cloned, plugins downloaded; run tmux after installing tmux."
+if ! dotfiles_have_cmd tmux; then
+  dotfiles_log "tmux not installed; TPM cloned, plugins downloaded; run tmux after installing tmux."
   exit 0
 fi
 
 tmux start-server 2>/dev/null || true
 if ! tmux source-file "${CONF}"; then
-  echo "tmux: warning: source-file ${CONF} failed (see errors above). Trying TPM install_plugins anyway."
+  dotfiles_warn "source-file ${CONF} failed (see errors above). Trying TPM install_plugins anyway."
 fi
 
 if [[ -x "${TPM_DIR}/scripts/install_plugins.sh" ]]; then
-  "${TPM_DIR}/scripts/install_plugins.sh" || echo "tmux: install_plugins.sh failed — plugins were cloned directly above; press Ctrl+b then I in tmux to retry." >&2
+  "${TPM_DIR}/scripts/install_plugins.sh" || dotfiles_warn "install_plugins.sh failed — plugins were cloned directly above; press Ctrl+b then I in tmux to retry."
 fi
 
-echo "tmux: reload with: tmux source-file ${CONF}"
-echo "tmux: in tmux, Ctrl+b then I installs/updates plugins; Ctrl+b then U updates."
+dotfiles_log "reload with: tmux source-file ${CONF}"
+dotfiles_log "in tmux, Ctrl+b then I installs/updates plugins; Ctrl+b then U updates."

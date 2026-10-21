@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
-[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
-command -v ghostty >/dev/null 2>&1 && exit 0
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/common.sh
+source "${ROOT}/lib/common.sh"
+dotfiles_skip_apps
+dotfiles_have_cmd ghostty && exit 0
 
-if command -v dnf >/dev/null 2>&1; then
+if dotfiles_have_cmd dnf; then
   sudo dnf -y copr enable scottames/ghostty
   sudo dnf install -y ghostty
-elif command -v apt-get >/dev/null 2>&1; then
+elif dotfiles_have_cmd apt-get; then
   if ! /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"; then
-    echo "install-ghostty: ubuntu installer failed (continuing)" >&2
+    dotfiles_warn "ubuntu installer failed (continuing)"
     exit 0
   fi
 else
-  echo "install-ghostty: unsupported OS" >&2
-  exit 1
+  dotfiles_die "unsupported OS"
 fi
