@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 CONFIG="install.conf.yaml"
 DOTBOT_DIR="dotbot"
@@ -10,11 +10,16 @@ DOTBOT_ARGS=()
 while [[ $# -gt 0 ]]; do
   case $1 in
     --skip-apps) export DOTFILES_SKIP_APPS=1 ;;
+    --links-only)
+      export DOTFILES_SKIP_APPS=1
+      DOTBOT_ARGS+=(--only link)
+      ;;
     -h|--help)
       echo "Usage: $0 [options] [dotbot args…]"
       echo
       echo "Options (this script):"
-      echo "  --skip-apps    skip Ghostty, Sublime, VS Code app installers"
+      echo "  --skip-apps    skip heavy/optional app installers (Ghostty, Sublime, VS Code, Docker, nvm, go, …)"
+      echo "  --links-only   only create symlinks (implies --skip-apps; passes --only link to dotbot)"
       echo
       echo "Anything else is passed to dotbot (e.g. -v, -vv, -n, --only link)."
       exit 0
@@ -25,7 +30,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 cd "${BASEDIR}"
-# All paths from .gitmodules (dotbot, plugins, ghostty/catppuccin, tmux/gpakosz, …)
 git submodule sync --recursive
 if git submodule update --help 2>&1 | grep -q -- '--jobs'; then
   git submodule update --init --recursive --progress --jobs "${DOTFILES_SUBMODULE_JOBS:-8}"

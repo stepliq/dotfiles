@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 [[ "$(uname -s)" == Linux ]] || exit 0
 [[ -f /etc/redhat-release ]] || exit 0
 d="${HOME}/.local/bin"

@@ -8,4 +8,8 @@ cd ~/.dotfiles
 ./install
 ```
 
-`./install --skip-apps` — только симлинки, без установщиков приложений.
+Флаги:
+
+- `./install --skip-apps` — пакеты + симлинки, без тяжёлых установщиков (Ghostty, Sublime, VS Code, Docker, nvm, Go, …)
+- `./install --links-only` — только симлинки (`dotbot --only link`)
+

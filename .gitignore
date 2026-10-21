@@ -4,3 +4,7 @@ __pycache__/
 
 lnav/*.zip
 *.AppImage
+
+zsh/rc/local.zsh
+
+.pi/

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # curl -fsSL https://get.docker.com | sh — then add user to group docker
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 
 REAL_USER="${SUDO_USER:-$USER}"
 

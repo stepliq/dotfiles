@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 
 VERSION="${DELTA_VERSION:-0.19.2}"
 DEST="${HOME}/.local/bin"

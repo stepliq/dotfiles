@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 
 VERSION="${LNAV_VERSION:-0.14.1}"
 DEST="${HOME}/.local/bin"

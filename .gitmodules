@@ -7,6 +7,3 @@
 [submodule "ghostty/catppuccin"]
 	path = ghostty/catppuccin
 	url = https://github.com/catppuccin/ghostty.git
-[submodule "tmux/gpakosz"]
-	path = tmux/gpakosz
-	url = https://github.com/gpakosz/.tmux.git

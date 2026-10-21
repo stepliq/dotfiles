@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 
 VERSION="${WATCHMAN_VERSION:-2026.07.27.00}"
 PREFIX="${HOME}/.local/opt/watchman"

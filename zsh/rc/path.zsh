@@ -21,8 +21,8 @@ zinit light-mode for \
 export PATH=$HOME/.cargo/bin:$PATH
 # alias cursor="$HOME/.cursor/cursor.AppImage --no-sandbox"
 
-export GOROOT=/home/snppg/.go
-export GOPATH=/home/snppg/go
+export GOROOT=$HOME/.go
+export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 [[ -d $HOME/.local/lib/kache/shims ]] && export PATH=$HOME/.local/lib/kache/shims:$PATH

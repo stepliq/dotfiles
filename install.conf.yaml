@@ -118,6 +118,14 @@
       path: ghostty/catppuccin/themes/catppuccin-frappe.conf
       create: true
       backup: true
+    ~/.config/ghostty/themes/catppuccin-macchiato.conf:
+      path: ghostty/catppuccin/themes/catppuccin-macchiato.conf
+      create: true
+      backup: true
+    ~/.config/ghostty/themes/catppuccin-mocha.conf:
+      path: ghostty/catppuccin/themes/catppuccin-mocha.conf
+      create: true
+      backup: true
     ~/.config/tmux/tmux.conf:
       path: tmux/tmux.conf
       create: true
@@ -148,29 +156,30 @@
 
 - shell:
     - command: bash scripts/install-ssh-agent.sh
-    - command: bash scripts/install-tmux-tpm.sh
-    - command: bash scripts/install-ghostty.sh
-    - command: bash scripts/install-sublime-text.sh
-    - command: bash scripts/install-nvm.sh
-    - command: bash scripts/install-branchlet.sh
-    - command: bash scripts/install-delta.sh
-    - command: bash scripts/install-go.sh
-    - command: bash scripts/install-worktrunk.sh
-    - command: bash scripts/install-kache.sh
-    - command: bash scripts/install-vscode.sh
-    - command: bash scripts/install-vscode-extensions.sh
-    - command: bash scripts/install-docker.sh
-    - command: bash scripts/install-lazydocker.sh
-    - command: bash scripts/install-agg.sh
-    - command: bash scripts/install-unp-linux.sh
-    - command: bash scripts/install-debian-compat.sh
-    - command: bash scripts/install-cli-fallbacks.sh
-    - command: bash scripts/install-lnav.sh
-    - command: bash scripts/install-ov.sh
-    - command: bash scripts/install-watchman.sh
-    - command: bash scripts/install-git-branchless.sh
-    - command: bash scripts/install-xxh.sh
-    - command: bash scripts/install-sshx.sh
-    - command: bash scripts/chsh-zsh-if-needed.sh
-    - command: bash scripts/enable-gammastep.sh
-    - command: bash scripts/enable-jetbrainsd.sh
+    - command: bash scripts/install-tmux-tpm.sh || true
+    - command: bash scripts/install-gdb-dashboard.sh || true
+    - command: bash scripts/install-ghostty.sh || true
+    - command: bash scripts/install-sublime-text.sh || true
+    - command: bash scripts/install-nvm.sh || true
+    - command: bash scripts/install-branchlet.sh || true
+    - command: bash scripts/install-delta.sh || true
+    - command: bash scripts/install-go.sh || true
+    - command: bash scripts/install-worktrunk.sh || true
+    - command: bash scripts/install-kache.sh || true
+    - command: bash scripts/install-vscode.sh || true
+    - command: bash scripts/install-vscode-extensions.sh || true
+    - command: bash scripts/install-docker.sh || true
+    - command: bash scripts/install-lazydocker.sh || true
+    - command: bash scripts/install-agg.sh || true
+    - command: bash scripts/install-unp-linux.sh || true
+    - command: bash scripts/install-debian-compat.sh || true
+    - command: bash scripts/install-cli-fallbacks.sh || true
+    - command: bash scripts/install-lnav.sh || true
+    - command: bash scripts/install-ov.sh || true
+    - command: bash scripts/install-watchman.sh || true
+    - command: bash scripts/install-git-branchless.sh || true
+    - command: bash scripts/install-xxh.sh || true
+    - command: bash scripts/install-sshx.sh || true
+    - command: bash scripts/chsh-zsh-if-needed.sh || true
+    - command: bash scripts/enable-gammastep.sh || true
+    - command: bash scripts/enable-jetbrainsd.sh || true

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 
 if command -v git-branchless >/dev/null 2>&1 || git branchless --help >/dev/null 2>&1; then
   echo "git-branchless: already installed"

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 export PATH="$HOME/.cargo/bin:$PATH"
 command -v cargo >/dev/null 2>&1 || exit 0
 if ! command -v wt >/dev/null 2>&1 && [[ ! -x "$HOME/.cargo/bin/wt" ]]; then

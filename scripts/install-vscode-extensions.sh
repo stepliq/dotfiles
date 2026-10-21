@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # DOTFILES_VSCODE_CLI=code|cursor|codium  DOTFILES_VSCODE_EXT_TIMEOUT=300
 set -uo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 T="${DOTFILES_VSCODE_EXT_TIMEOUT:-180}"
 EXT=(
   editorconfig.editorconfig ms-python.python ms-python.vscode-pylance
@@ -29,4 +30,7 @@ run() {
 C="$(cli)" || exit 0
 f=0
 for e in "${EXT[@]}"; do run "$C" "$e" || f=1; done
-exit "$f"
+if [[ $f -ne 0 ]]; then
+  echo "vscode-extensions: some installs failed (continuing)" >&2
+fi
+exit 0

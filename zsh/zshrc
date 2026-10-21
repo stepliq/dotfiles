@@ -8,5 +8,3 @@ for _part in $_zshrc_parts; do
   [[ -r "$ZSH_CONFIG_DIR/rc/$_part.zsh" ]] && source "$ZSH_CONFIG_DIR/rc/$_part.zsh"
 done
 unset _part _zshrc_parts
-
-if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

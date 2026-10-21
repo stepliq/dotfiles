@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+[[ -n ${DOTFILES_SKIP_APPS:-} ]] && exit 0
 v="${LAZYDOCKER_VERSION:-0.25.2}"
 d="${HOME}/.local/bin"
 mkdir -p "$d"
