@@ -34,6 +34,13 @@
         - tldr
         - pv
         - ipcalc
+        - jq
+        - procs
+        - fastfetch
+        - fq
+        - just
+        - fclones
+        - erdtree
         - { pac: gammastep, apt: gammastep, dnf: gammastep }
         - { pac: python-pyxdg, apt: python3-xdg, dnf: python3-pyxdg }
 
@@ -144,6 +151,7 @@
     - command: bash scripts/install-agg.sh
     - command: bash scripts/install-unp-linux.sh
     - command: bash scripts/install-debian-compat.sh
+    - command: bash scripts/install-cli-fallbacks.sh
     - command: bash scripts/install-lnav.sh
     - command: bash scripts/chsh-zsh-if-needed.sh
     - command: bash scripts/enable-gammastep.sh
