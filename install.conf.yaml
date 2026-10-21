@@ -138,6 +138,13 @@
       path: gammastep/config.ini
       create: true
       backup: true
+    ~/.config/systemd/user/jetbrainsd.service:
+      path: jetbrains/jetbrainsd.service
+      create: true
+      backup: true
+    ~/.local/libexec/run-jetbrainsd:
+      path: jetbrains/run-jetbrainsd.sh
+      create: true
 
 - shell:
     - command: bash scripts/install-ssh-agent.sh
@@ -166,3 +173,4 @@
     - command: bash scripts/install-sshx.sh
     - command: bash scripts/chsh-zsh-if-needed.sh
     - command: bash scripts/enable-gammastep.sh
+    - command: bash scripts/enable-jetbrainsd.sh

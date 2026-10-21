@@ -1,0 +1,19 @@
+[Unit]
+Description=JetBrains Daemon (outside graphical session)
+Documentation=https://www.jetbrains.com/help/toolbox-app/jetbrainsd.html
+After=default.target
+
+[Service]
+Type=simple
+Environment=IJENT_NO_SHUTDOWN_ON_DISCONNECT=true
+ExecStart=%h/.local/libexec/run-jetbrainsd
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=5
+KillMode=mixed
+KillSignal=SIGTERM
+FinalKillSignal=SIGKILL
+Slice=app-jetbrains.slice
+
+[Install]
+WantedBy=default.target
