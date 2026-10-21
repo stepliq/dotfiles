@@ -164,6 +164,8 @@
     - command: bash scripts/install-kache.sh || true
     - command: bash scripts/install-vscode.sh || true
     - command: bash scripts/install-vscode-extensions.sh || true
+    - command: bash scripts/install-firefox.sh || true
+    - command: bash scripts/install-firefox-extensions.sh || true
     - command: bash scripts/install-docker.sh || true
     - command: bash scripts/install-lazydocker.sh || true
     - command: bash scripts/install-agg.sh || true
