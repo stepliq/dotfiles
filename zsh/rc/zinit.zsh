@@ -35,6 +35,7 @@ zinit snippet OMZP::git
 
 export ZSH_TMUX_FIXTERM=false
 zinit snippet OMZP::tmux
+zinit cdreplay -q
 zinit snippet OMZ::themes/muse.zsh-theme
 
 zinit light zsh-users/zsh-autosuggestions
