@@ -149,6 +149,14 @@
     ~/.local/libexec/run-jetbrainsd:
       path: jetbrains/run-jetbrainsd.sh
       create: true
+    ~/.pi/agent/settings.json:
+      path: pi/settings.json
+      create: true
+      backup: true
+    ~/.pi/agent/APPEND_SYSTEM.md:
+      path: pi/APPEND_SYSTEM.md
+      create: true
+      backup: true
 
 - shell:
     - command: bash scripts/install-ssh-agent.sh
